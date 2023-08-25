@@ -52,9 +52,11 @@ In your README file, include a section where you highlight potential challenges 
 
 All your code and related files should be neatly organized in a Zip file, with the following internal structure
 
-    module\_1
+    module_1
     |-- README.md
-    |-- guess.csx
+    |-- guess.cs
+    |-- module_1_guess_my_number.csproj
+    |-- module_1_guess_my_number.sln
 
 **About assesment:**
 -------------------
