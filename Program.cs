@@ -6,6 +6,32 @@ using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
+
+
+/*
+
+explain how game work
+
+stats per round and per game
+
+
+can do EN, en, English and english
+
+
+change background color on impossible
+
+make all language checks if(Engish) {}
+
+
+if (language == norge) {
+    apptext Norge
+} else {
+    apptext English
+}
+
+*/
+
+
 class CoreGame
 {
     public static int minNumber = 1;
@@ -19,56 +45,59 @@ class CoreGame
     public static string difficulty = "";
     public static bool ready = false;
     public static bool english = true;
-    public static bool rematch = false;
+    public static bool rematch = true;
 
 
     public static void Main(string[] args)
     {
+        Console.Clear();
 
         CoreGame.ChooseLanguage();
+        
+        CoreGame.StartGame();
 
-        while (!ready)
-        {
-            CoreGame.ChooseDifficulty();
-            Console.Clear();
+        while (rematch) {
+            CoreGame.Replay();
         }
 
-        CoreGame.StartText();
+        CoreGame.stats();
+        
 
-        randmomNumber = new Random().Next(minNumber, maxNumber);
+    }
+
+    static void StartGame() {
+        CoreGame.ChooseDifficulty();
+        Console.Clear();
+        CoreGame.StartText();
 
         while (maxGuesses != wrongGuesses)
         {
             CoreGame.Round();
         }
-        CoreGame.stats();
-
-        while (!rematch) {
-            if(english) {
-                Console.WriteLine("Do you want to play again? y/n");
-            } else {
-                Console.WriteLine("Vil du spille igjen? y/n");
-            }
-            if(string.Compare(Console.ReadLine(), "y") == 0) {
-                CoreGame.ChooseDifficulty();
-                CoreGame.Round();
-                rematch = false;
-            } 
-            rematch = true;
-        }
-        CoreGame.stats();
-
     }
 
-    static void ChooseLanguage()
+    static void Replay() {
+        Console.WriteLine("Do you want to play again? y/n");
+        if(string.Equals(Console.ReadLine(), "y")) {
+             rematch = true;
+             wrongGuesses = 0;
+             CoreGame.StartGame();
+        } else if (string.Equals(Console.ReadLine(), "n")){
+            rematch = false;
+        } else {
+            rematch = false;
+        }
+    }
+
+    static void ChooseLanguage() 
     {
         Console.WriteLine("Do you want English or Norwegian?");
-        string language = Console.ReadLine();
-        if (string.Equals(language, "English"))
+        string language = Console.ReadLine().ToLower();
+        if ((string.Equals(language, "english")) || (string.Equals(language, "en")) || (string.Equals(language, "engelsk")))
         {
             english = true;
         }
-        else if (string.Equals(language, "Norwegian"))
+        else if ((string.Equals(language, "norwegian")) || (string.Equals(language, "no")) || (string.Equals(language, "norsk")))
         {
             english = false;
         }
@@ -194,35 +223,37 @@ class CoreGame
     {
         if (!english)
         {
-            Console.WriteLine("Hvilken vanskelighetsgrad onsker du?");
+            Console.WriteLine("Hvilken vanskelighetsgrad onsker du?"); //Add numeric value to each difficulty
+            Console.WriteLine("Lett, Medium, Vanskelig, Umulig eller Morroskyld");
         }
         else
         {
             Console.WriteLine("What difficulty do you want?");
+            Console.WriteLine("Easy, Medium, Hard, Impossible or Fun");
         }
 
-        difficulty = Console.ReadLine();
-        if ((difficulty == "Easy") || (difficulty == "Lett"))
+        difficulty = Console.ReadLine().ToLower();
+        if ((difficulty == "easy") || (difficulty == "lett"))
         {
             CoreGame.EasyDifficulty();
             ready = true;
         }
-        else if ((difficulty == "Medium") || (difficulty == "Medium"))
+        else if ((difficulty == "medium") || (difficulty == "medium"))
         {
             CoreGame.MediumDifficulty();
             ready = true;
         }
-        else if ((difficulty == "Hard") || (difficulty == "Vanskelig"))
+        else if ((difficulty == "hard") || (difficulty == "vanskelig"))
         {
             CoreGame.HardDifficulty();
             ready = true;
         }
-        else if ((difficulty == "Impossible") || (difficulty == "Umulig"))
+        else if ((difficulty == "impossible") || (difficulty == "umulig"))
         {
             CoreGame.ImpossibleDifficulty();
             ready = true;
         }
-        else if ((difficulty == "Fun") || (difficulty == "Morroskyld"))
+        else if ((difficulty == "fun") || (difficulty == "morroskyld"))
         {
             CoreGame.FunDifficulty();
             ready = true;
@@ -234,12 +265,14 @@ class CoreGame
                 Console.WriteLine("Velg en vanskelighetsgrad. Du kan velge mellom: Lett, Medium, Vanskelig, Umulig eller Morroskyld.");
             }
             Console.WriteLine("Please input a difficulty. Choose between: Easy, Medium, Hard, Impossible or Fun.");
-            difficulty = Console.ReadLine();
+            CoreGame.ChooseDifficulty();
         }
     }
 
     static void Round()
     {
+
+        var apptext = "";
 
         ApplicationStrings appText = new ApplicationStrings
 
@@ -262,6 +295,8 @@ class CoreGame
             EnterYourGuess = "Runde {0} - Skriv inn ditt gjett: ",
             GuessANumberBetween = "Gjett et tall mellom {0} og {1}"
         };
+
+        apptext = appTextNorge;
 
         CoreGame.randmomNumber = new Random().Next(minNumber, maxNumber);
 
@@ -367,7 +402,7 @@ class CoreGame
             }
             else
             {
-                Console.WriteLine("Du har : " + (maxGuesses - wrongGuesses) + " gjett(er) igjen!"); 
+                Console.WriteLine("Du har : " + (maxGuesses - wrongGuesses) + " gjett igjen!"); 
             }
 
             Console.ResetColor();
