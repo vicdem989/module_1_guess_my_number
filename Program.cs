@@ -1,4 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿﻿// See https://aka.ms/new-console-template for more information
 
 using System.Drawing;
 using System.Reflection.Metadata.Ecma335;
@@ -39,15 +39,15 @@ class CoreGame
     public static bool ready = false;
     public static bool english = true;
     public static bool rematch = true;
-    
+
     public static void Main(string[] args)
     {
         Console.Clear();
         CoreGame.ChooseLanguage();
-        CoreGame.StartGame();
+        Console.Clear();
         while (rematch)
         {
-            CoreGame.Replay();
+            CoreGame.StartGame();
         }
         CoreGame.stats();
     }
@@ -61,17 +61,13 @@ class CoreGame
         {
             CoreGame.Round();
         }
-    }
-    static void Replay()
-    {
         Console.WriteLine("Do you want to play again? y/n");
-        if (string.Equals(Console.ReadLine(), "y"))
+        if (string.Equals(Console.ReadLine(), "n"))
         {
-            rematch = true;
-            wrongGuesses = 0;
-            CoreGame.StartGame();
+            rematch = false;
         }
-        rematch = false;
+        Console.Clear();
+        wrongGuesses = 0;
     }
     static void ChooseLanguage()
     {
@@ -87,6 +83,7 @@ class CoreGame
         }
         else
         {
+            Console.Clear();
             CoreGame.ChooseLanguage();
         }
     }
@@ -165,7 +162,7 @@ class CoreGame
     {
         if (!english)
         {
-            Console.WriteLine("Hvilken vanskelighetsgrad onsker du?"); 
+            Console.WriteLine("Hvilken vanskelighetsgrad onsker du?");
             Console.WriteLine("Lett, Medium, Vanskelig, Umulig eller Morroskyld");
         }
         else
@@ -174,7 +171,7 @@ class CoreGame
             Console.WriteLine("Easy, Medium, Hard, Impossible or Fun");
         }
 
-        difficulty = Console.ReadLine().ToLower();      
+        difficulty = Console.ReadLine().ToLower();
 
         if ((difficulty == "fun") || (difficulty == "morroskyld"))
         {
@@ -206,9 +203,10 @@ class CoreGame
         minNumber = 1;
         if (!ready)
         {
+            Console.Clear();
             CoreGame.ChooseDifficulty();
         }
-    
+
     }
 
     static void Round()
@@ -253,9 +251,7 @@ class CoreGame
             var test = int.TryParse(input, out var result);
             if (!test)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(languages[0].InputNumber);
-                Console.ResetColor();
+                CoreGame.changeColor(ConsoleColor.Red, languages[0].InputNumber);
                 continue;
             }
             CoreGame.guess = int.Parse(input);
@@ -264,19 +260,19 @@ class CoreGame
             if (guess < randmomNumber)
             {
                 CoreGame.setTextColor();
-                Console.WriteLine($""+languages[0].TooLow, CoreGame.currentRound);
+                Console.WriteLine($"" + languages[0].TooLow, CoreGame.currentRound);
                 CoreGame.wrongGuesses++;
             }
             else if (guess > randmomNumber)
             {
                 CoreGame.setTextColor();
-                Console.WriteLine($""+languages[0].TooHigh, CoreGame.currentRound);
+                Console.WriteLine($"" + languages[0].TooHigh, CoreGame.currentRound);
                 CoreGame.wrongGuesses++;
             }
             else
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($""+languages[0].YouGuessedIt, CoreGame.currentRound);
+                Console.WriteLine($"" + languages[0].YouGuessedIt, CoreGame.currentRound);
                 CoreGame.correctGuesses++;
                 CoreGame.currentRound++;
                 CoreGame.randmomNumber = new Random().Next(minNumber, maxNumber);
@@ -293,30 +289,32 @@ class CoreGame
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
             }
-            Console.WriteLine(""+languages[0].GuessesLeft + (maxGuesses - wrongGuesses));
+            Console.WriteLine("" + languages[0].GuessesLeft + (maxGuesses - wrongGuesses));
             Console.ResetColor();
         }
     }
+
+    static void changeColor(System.ConsoleColor color, string text)
+    {
+        Console.ForegroundColor = color;
+        Console.WriteLine(text);
+        Console.ResetColor();
+    }
+
     static void stats()
     {
         float avgWrongGuessesPerRound = (float)CoreGame.wrongGuesses / (float)CoreGame.correctGuesses;
         Console.Clear();
         if (english)
         {
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"You got " + CoreGame.correctGuesses + " correct guesses!");
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"Total of " + CoreGame.wrongGuesses + " wrong Guesses");
-            Console.ResetColor();
+            CoreGame.changeColor(ConsoleColor.Green, "You got " + CoreGame.correctGuesses + " correct guesses!");
+            CoreGame.changeColor(ConsoleColor.Red, $"Total of " + CoreGame.wrongGuesses + " wrong Guesses");
             Console.WriteLine("Per round average wrong guesses are: {0:N2}", avgWrongGuessesPerRound);
         }
         else
         {
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"Du har " + CoreGame.correctGuesses + " riktige svar!");
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"Totalt " + CoreGame.wrongGuesses + " feil svar!");
-            Console.ResetColor();
+            CoreGame.changeColor(ConsoleColor.Green, $"Du har " + CoreGame.correctGuesses + " riktige svar!");
+            CoreGame.changeColor(ConsoleColor.Red, $"Totalt " + CoreGame.wrongGuesses + " feil svar!");
             Console.WriteLine("Gjennomsnittelig feil gjett per runde er: {0:N2}", avgWrongGuessesPerRound);
         }
     }
