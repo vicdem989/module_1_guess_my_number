@@ -1,4 +1,4 @@
-﻿﻿// See https://aka.ms/new-console-template for more information
+﻿// See https://aka.ms/new-console-template for more information
 
 using System.Drawing;
 using System.Reflection.Metadata.Ecma335;
@@ -43,23 +43,22 @@ class CoreGame
     public static void Main(string[] args)
     {
         Console.Clear();
-        CoreGame.ChooseLanguage();
-        Console.Clear();
+        ApplicationStrings appText = CoreGame.ChooseLanguage();
         while (rematch)
         {
-            CoreGame.StartGame();
+            CoreGame.StartGame(appText);
         }
-        CoreGame.stats();
+        CoreGame.Stats(appText);
     }
 
-    static void StartGame()
+    static void StartGame(ApplicationStrings appText)
     {
-        CoreGame.ChooseDifficulty();
+        CoreGame.ChooseDifficulty(appText);
         Console.Clear();
-        CoreGame.StartText();
+        CoreGame.StartText(appText);
         while (maxGuesses != wrongGuesses)
         {
-            CoreGame.Round();
+            CoreGame.Round(appText);
         }
         Console.WriteLine("Do you want to play again? y/n");
         if (string.Equals(Console.ReadLine(), "n"))
@@ -69,26 +68,71 @@ class CoreGame
         Console.Clear();
         wrongGuesses = 0;
     }
-    static void ChooseLanguage()
+    public static ApplicationStrings ChooseLanguage()
     {
+        Console.Clear();
         Console.WriteLine("Do you want English or Norwegian?");
         string language = Console.ReadLine().ToLower();
-        if ((string.Equals(language, "english")) || (string.Equals(language, "en")) || (string.Equals(language, "engelsk")))
+        bool validLanguage = false;
+        Console.Clear();
+        if ((string.Equals(language, "english")) || (string.Equals(language, "en")) || (string.Equals(language, "engelsk")) || (string.Equals(language, "norwegian")) || (string.Equals(language, "no")) || (string.Equals(language, "norsk")))
         {
-            english = true;
+            validLanguage = true;
         }
-        else if ((string.Equals(language, "norwegian")) || (string.Equals(language, "no")) || (string.Equals(language, "norsk")))
+        if ((string.Equals(language, "english")) || (string.Equals(language, "en")) || (string.Equals(language, "engelsk")) && validLanguage)
         {
-            english = false;
+            return new ApplicationStrings
+            {
+                EnterYourGuess = " Enter your guess: ",
+                InputNumber = "Please input a number",
+                TooLow = "Too low",
+                TooHigh = "Too high",
+                YouGuessedIt = "You guessed it!",
+                GuessesLeft = "Guesses left: ",
+                RoundNumber = "Round - ",
+                YouChose = "You chose ",
+                ChosenDifficulty = " difficulty",
+                TotalGuesses = "Total guesses: ",
+                WhatDifficulty = "What difficulty do you want?",
+                DifficultyList = "Easy, Medium, Hard, Impossible or Fun",
+                WrongInput = "Please input a number",
+                StatsCorrectGuesses = "Total correct guesses: ",
+                StatsWrongGuesses = "Total wrong guesses: ",
+                StatsPerRoundAverage = "Average wrong guess per round: ",
+                GuessANumberBetween = "Guess a number between: "
+            };
+        }
+        else if ((string.Equals(language, "norwegian")) || (string.Equals(language, "no")) || (string.Equals(language, "norsk")) && validLanguage)
+        {
+            return new ApplicationStrings
+            {
+                EnterYourGuess = " Skriv inn ditt gjett: ",
+                InputNumber = "Skriv inn et tall",
+                TooLow = "For lavt",
+                TooHigh = "For høyt",
+                YouGuessedIt = "Du gjettet riktig!",
+                GuessesLeft = "Gjettninger igjen: ",
+                RoundNumber = "Runde - ",
+                YouChose = "Du valgte ",
+                ChosenDifficulty = " vanskelighetsgrad",
+                TotalGuesses = "Totale gjett: ",
+                WhatDifficulty = "Hvilken vanskelighetsgrad onsker du?",
+                DifficultyList = "Lett, Medium, Vanskelig, Umulig eller Morroskyld",
+                WrongInput = "Skriv inn et tall",
+                StatsCorrectGuesses = "Totalt riktige gjett: ",
+                StatsWrongGuesses = "Totale feil gjett: ",
+                StatsPerRoundAverage = "Gjennomsnittelig feil gjett per runde: ",
+                GuessANumberBetween = "Gjett et tall mellom: "
+            };
         }
         else
         {
-            Console.Clear();
-            CoreGame.ChooseLanguage();
+            return CoreGame.ChooseLanguage();
         }
     }
-    static void StartText()
+    static void StartText(ApplicationStrings appText)
     {
+        Console.ForegroundColor = ConsoleColor.Magenta;
         if ((string.Compare(difficulty, "Easy") == 0) || (string.Compare(difficulty, "Lett") == 0))
         {
             Console.ForegroundColor = ConsoleColor.DarkGreen;
@@ -105,26 +149,13 @@ class CoreGame
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
         }
-        else
-        {
-            Console.ForegroundColor = ConsoleColor.Magenta;
-        }
-        if (english)
-        {
-            Console.WriteLine("You chose " + difficulty + " difficulty.");
-            Console.ResetColor();
-            Console.WriteLine("Total guesses: " + maxGuesses);
-            Console.WriteLine("\n" + "Guess a number between {0} og {1}", minNumber, maxNumber);
-        }
-        else
-        {
-            Console.WriteLine("Du valgte " + difficulty + " vanskelighetsgrad.");
-            Console.ResetColor();
-            Console.WriteLine("Totale gjett: " + maxGuesses);
-            Console.WriteLine("\n" + "Gjett et tall mellom {0} og {1}", minNumber, maxNumber);
-        }
+
+        Console.WriteLine(appText.YouChose + difficulty + appText.ChosenDifficulty);
+        Console.ResetColor();
+        Console.WriteLine(appText.TotalGuesses);
+        Console.WriteLine(appText.GuessANumberBetween + minNumber + " - " + maxNumber);
     }
-    static void EasyDifficulty()
+    static void EasyDifficulty() //Call startext easy text here ------------------------------------------------------------------------------------------------------------------------------------------------------
     {
         CoreGame.maxGuesses = 25;
         CoreGame.maxNumber = 50;
@@ -158,20 +189,12 @@ class CoreGame
             CoreGame.maxGuesses = new Random().Next(1, CoreGame.minNumber);
         }
     }
-    static void ChooseDifficulty()
+    static void ChooseDifficulty(ApplicationStrings appText)
     {
-        if (!english)
-        {
-            Console.WriteLine("Hvilken vanskelighetsgrad onsker du?");
-            Console.WriteLine("Lett, Medium, Vanskelig, Umulig eller Morroskyld");
-        }
-        else
-        {
-            Console.WriteLine("What difficulty do you want?");
-            Console.WriteLine("Easy, Medium, Hard, Impossible or Fun");
-        }
-
+        Console.WriteLine(appText.WhatDifficulty);
+        Console.WriteLine(appText.DifficultyList);
         difficulty = Console.ReadLine().ToLower();
+
 
         if ((difficulty == "fun") || (difficulty == "morroskyld"))
         {
@@ -200,58 +223,29 @@ class CoreGame
             CoreGame.ImpossibleDifficulty();
             ready = true;
         }
-        minNumber = 1;
-        if (!ready)
+        else
         {
             Console.Clear();
-            CoreGame.ChooseDifficulty();
+            CoreGame.ChooseDifficulty(appText);
         }
+        minNumber = 1;
 
     }
 
-    static void Round()
+    static void Round(ApplicationStrings appText)
     {
-        ApplicationStrings appTextEN = new ApplicationStrings
-        {
-            EnterYourGuess = "Round {0} - Enter your guess: ",
-            InputNumber = "Please input a number",
-            TooLow = "Too low",
-            TooHigh = "Too high",
-            YouGuessedIt = "You guessed it!",
-            GuessesLeft = "Guesses left: "
-        };
-        ApplicationStrings appTextNO = new ApplicationStrings
-        {
-            EnterYourGuess = "Runde {0} - Skriv inn ditt gjett: ",
-            InputNumber = "Skriv inn et tall",
-            TooLow = "For lavt",
-            TooHigh = "For høyt",
-            YouGuessedIt = "Du gjettet riktig!",
-            GuessesLeft = "Gjettninger igjen: "
-        };
-        ApplicationStrings[] languages = new ApplicationStrings[2];
-        languages[0] = appTextEN;
-        languages[1] = appTextNO;
-
-        if (english)
-        {
-            languages.SetValue(appTextEN, 0);
-        }
-        else
-        {
-            languages.SetValue(appTextNO, 0);
-        }
         CoreGame.randmomNumber = new Random().Next(minNumber, maxNumber);
         CoreGame.wrongGuesses = 0;
         while (maxGuesses != wrongGuesses)
         {
             Console.Write("Answer: " + randmomNumber + "\n");
-            Console.WriteLine(languages[0].EnterYourGuess, CoreGame.currentRound);
+            Console.WriteLine(appText.RoundNumber + currentRound + appText.EnterYourGuess);
+
             var input = Console.ReadLine();
             var test = int.TryParse(input, out var result);
             if (!test)
             {
-                CoreGame.changeColor(ConsoleColor.Red, languages[0].InputNumber);
+                Console.Clear();
                 continue;
             }
             CoreGame.guess = int.Parse(input);
@@ -260,19 +254,19 @@ class CoreGame
             if (guess < randmomNumber)
             {
                 CoreGame.setTextColor();
-                Console.WriteLine($"" + languages[0].TooLow, CoreGame.currentRound);
+                Console.WriteLine($"" + appText.TooLow, CoreGame.currentRound);
                 CoreGame.wrongGuesses++;
             }
             else if (guess > randmomNumber)
             {
                 CoreGame.setTextColor();
-                Console.WriteLine($"" + languages[0].TooHigh, CoreGame.currentRound);
+                Console.WriteLine($"" + appText.TooHigh, CoreGame.currentRound);
                 CoreGame.wrongGuesses++;
             }
             else
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"" + languages[0].YouGuessedIt, CoreGame.currentRound);
+                Console.WriteLine($"" + appText.YouGuessedIt, CoreGame.currentRound);
                 CoreGame.correctGuesses++;
                 CoreGame.currentRound++;
                 CoreGame.randmomNumber = new Random().Next(minNumber, maxNumber);
@@ -289,7 +283,7 @@ class CoreGame
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
             }
-            Console.WriteLine("" + languages[0].GuessesLeft + (maxGuesses - wrongGuesses));
+            Console.WriteLine("" + appText.GuessesLeft + (maxGuesses - wrongGuesses));
             Console.ResetColor();
         }
     }
@@ -301,22 +295,15 @@ class CoreGame
         Console.ResetColor();
     }
 
-    static void stats()
+    static void Stats(ApplicationStrings appText)
     {
         float avgWrongGuessesPerRound = (float)CoreGame.wrongGuesses / (float)CoreGame.correctGuesses;
         Console.Clear();
-        if (english)
-        {
-            CoreGame.changeColor(ConsoleColor.Green, "You got " + CoreGame.correctGuesses + " correct guesses!");
-            CoreGame.changeColor(ConsoleColor.Red, $"Total of " + CoreGame.wrongGuesses + " wrong Guesses");
-            Console.WriteLine("Per round average wrong guesses are: {0:N2}", avgWrongGuessesPerRound);
-        }
-        else
-        {
-            CoreGame.changeColor(ConsoleColor.Green, $"Du har " + CoreGame.correctGuesses + " riktige svar!");
-            CoreGame.changeColor(ConsoleColor.Red, $"Totalt " + CoreGame.wrongGuesses + " feil svar!");
-            Console.WriteLine("Gjennomsnittelig feil gjett per runde er: {0:N2}", avgWrongGuessesPerRound);
-        }
+
+        CoreGame.changeColor(ConsoleColor.Green, appText.StatsCorrectGuesses + CoreGame.correctGuesses);
+        CoreGame.changeColor(ConsoleColor.Red, appText.StatsWrongGuesses + CoreGame.wrongGuesses);
+        Console.WriteLine(appText.StatsPerRoundAverage + avgWrongGuessesPerRound);
+
     }
     static void setTextColor()
     {
@@ -332,12 +319,22 @@ class CoreGame
 }
 class ApplicationStrings
 {
-    public string Guess { get; set; }
+    public string GuessANumberBetween { get; set; }
+    public string StatsCorrectGuesses { get; set; }
+    public string StatsWrongGuesses { get; set; }
+    public string StatsPerRoundAverage { get; set; }
+    public string WrongInput { get; set; }
+    public string WhatDifficulty { get; set; }
+    public string DifficultyList { get; set; }
+    public string YouChose { get; set; }
+    public string ChosenDifficulty { get; set; }
+    public string TotalGuesses { get; set; }
+    public string RoundNumber { get; set; }
     public string TooLow { get; set; }
     public string TooHigh { get; set; }
     public string YouGuessedIt { get; set; }
     public string EnterYourGuess { get; set; }
-    public string GuessANumberBetween { get; set; }
     public string InputNumber { get; set; }
     public string GuessesLeft { get; set; }
+
 }
