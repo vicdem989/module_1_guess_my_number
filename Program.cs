@@ -55,7 +55,6 @@ class CoreGame
     {
         CoreGame.ChooseDifficulty(appText);
         Console.Clear();
-        CoreGame.StartText(appText);
         while (maxGuesses != wrongGuesses)
         {
             CoreGame.Round(appText);
@@ -130,70 +129,15 @@ class CoreGame
             return CoreGame.ChooseLanguage();
         }
     }
-    static void StartText(ApplicationStrings appText)
+        static void ChooseDifficulty(ApplicationStrings appText)
     {
-        Console.ForegroundColor = ConsoleColor.Magenta;
-        if ((string.Compare(difficulty, "Easy") == 0) || (string.Compare(difficulty, "Lett") == 0))
-        {
-            Console.ForegroundColor = ConsoleColor.DarkGreen;
-        }
-        else if ((string.Compare(difficulty, "Medium") == 0) || (string.Compare(difficulty, "Medium") == 0))
-        {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-        }
-        else if ((string.Compare(difficulty, "Hard") == 0) || (string.Compare(difficulty, "Vanskelig") == 0))
-        {
-            Console.ForegroundColor = ConsoleColor.DarkRed;
-        }
-        else if ((string.Compare(difficulty, "Impossible") == 0) || (string.Compare(difficulty, "Morroskyld") == 0))
-        {
-            Console.ForegroundColor = ConsoleColor.Cyan;
-        }
-
-        Console.WriteLine(appText.YouChose + difficulty + appText.ChosenDifficulty);
-        Console.ResetColor();
-        Console.WriteLine(appText.TotalGuesses);
-        Console.WriteLine(appText.GuessANumberBetween + minNumber + " - " + maxNumber);
-    }
-    static void EasyDifficulty() //Call startext easy text here ------------------------------------------------------------------------------------------------------------------------------------------------------
-    {
-        CoreGame.maxGuesses = 25;
-        CoreGame.maxNumber = 50;
-    }
-    static void MediumDifficulty()
-    {
-        CoreGame.maxGuesses = 15;
-        CoreGame.maxNumber = 75;
-    }
-    static void HardDifficulty()
-    {
-        CoreGame.maxGuesses = 10;
-        CoreGame.maxNumber = 100;
-    }
-    static void ImpossibleDifficulty()
-    {
-        CoreGame.maxGuesses = 3;
-        CoreGame.maxNumber = 200;
-    }
-    static void FunDifficulty()
-    {
-        CoreGame.minNumber = new Random().Next(1, 100);
-        CoreGame.maxNumber = new Random().Next(1, 100);
-        while (maxNumber < minNumber)
-        {
-            CoreGame.minNumber = new Random().Next(1, 100);
-            CoreGame.maxNumber = new Random().Next(1, 100);
-        }
-        if (maxNumber > minNumber)
-        {
-            CoreGame.maxGuesses = new Random().Next(1, CoreGame.minNumber);
-        }
-    }
-    static void ChooseDifficulty(ApplicationStrings appText)
-    {
+        string testing = "";
         Console.WriteLine(appText.WhatDifficulty);
         Console.WriteLine(appText.DifficultyList);
-        difficulty = Console.ReadLine().ToLower();
+        //Console.WriteLine("Enter difficulty: ");
+        difficulty = Console.ReadLine();
+        Console.WriteLine("HEI ");
+        //difficulty = Console.ReadLine();//.ToLower();
 
 
         if ((difficulty == "fun") || (difficulty == "morroskyld"))
@@ -229,9 +173,45 @@ class CoreGame
             CoreGame.ChooseDifficulty(appText);
         }
         minNumber = 1;
+            Console.WriteLine(appText.YouChose + difficulty + appText.ChosenDifficulty);
+        Console.WriteLine(appText.TotalGuesses + maxGuesses);
+        Console.WriteLine(appText.GuessANumberBetween + minNumber + " - " + maxNumber);
 
     }
-
+    static void EasyDifficulty() //Call startext easy text here ------------------------------------------------------------------------------------------------------------------------------------------------------
+    {
+        CoreGame.maxGuesses = 25;
+        CoreGame.maxNumber = 50;
+    }
+    static void MediumDifficulty()
+    {
+        CoreGame.maxGuesses = 15;
+        CoreGame.maxNumber = 75;
+    }
+    static void HardDifficulty()
+    {
+        CoreGame.maxGuesses = 10;
+        CoreGame.maxNumber = 100;
+    }
+    static void ImpossibleDifficulty()
+    {
+        CoreGame.maxGuesses = 3;
+        CoreGame.maxNumber = 200;
+    }
+    static void FunDifficulty()
+    {
+        CoreGame.minNumber = new Random().Next(1, 100);
+        CoreGame.maxNumber = new Random().Next(1, 100);
+        while (maxNumber < minNumber)
+        {
+            CoreGame.minNumber = new Random().Next(1, 100);
+            CoreGame.maxNumber = new Random().Next(1, 100);
+        }
+        if (maxNumber > minNumber)
+        {
+            CoreGame.maxGuesses = new Random().Next(1, CoreGame.minNumber);
+        }
+    }
     static void Round(ApplicationStrings appText)
     {
         CoreGame.randmomNumber = new Random().Next(minNumber, maxNumber);
