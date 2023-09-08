@@ -6,25 +6,6 @@ using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
-
-
-/*
-
-explain how game work
-
-stats per round and per game
-
-change background color on impossible
-
-make all language checks if(Engish) {}
-
-Add numeric value to each difficulty
-        
-
-
-*/
-
-
 class CoreGame
 {
     public static int minNumber = 1;
@@ -39,7 +20,6 @@ class CoreGame
     public static bool ready = false;
     public static bool english = true;
     public static bool rematch = true;
-
     public static void Main(string[] args)
     {
         Console.Clear();
@@ -54,8 +34,11 @@ class CoreGame
     static void StartGame(ApplicationStrings appText)
     {
         CoreGame.ChooseDifficulty(appText);
+<<<<<<< Updated upstream
         Console.Clear();
         CoreGame.StartText(appText);
+=======
+>>>>>>> Stashed changes
         while (maxGuesses != wrongGuesses)
         {
             CoreGame.Round(appText);
@@ -66,14 +49,13 @@ class CoreGame
             rematch = false;
         }
         Console.Clear();
-        wrongGuesses = 0;
     }
     public static ApplicationStrings ChooseLanguage()
     {
         Console.Clear();
         Console.WriteLine("Do you want English or Norwegian?");
         string language = Console.ReadLine().ToLower();
-        bool validLanguage = false;
+        bool validLanguage = true;
         Console.Clear();
         if ((string.Equals(language, "english")) || (string.Equals(language, "en")) || (string.Equals(language, "engelsk")) || (string.Equals(language, "norwegian")) || (string.Equals(language, "no")) || (string.Equals(language, "norsk")))
         {
@@ -130,6 +112,7 @@ class CoreGame
             return CoreGame.ChooseLanguage();
         }
     }
+<<<<<<< Updated upstream
     static void StartText(ApplicationStrings appText)
     {
         Console.ForegroundColor = ConsoleColor.Magenta;
@@ -153,29 +136,72 @@ class CoreGame
         Console.WriteLine(appText.YouChose + difficulty + appText.ChosenDifficulty);
         Console.ResetColor();
         Console.WriteLine(appText.TotalGuesses);
+=======
+    static void ChooseDifficulty(ApplicationStrings appText)
+    {
+        Console.Clear();
+        Console.WriteLine(appText.WhatDifficulty);
+        Console.WriteLine(appText.DifficultyList);
+        difficulty = Console.ReadLine().ToLower();
+        Console.Clear();
+        if ((difficulty == "fun") || (difficulty == "morroskyld"))
+        {
+            CoreGame.FunDifficulty(appText);
+            Console.WriteLine("\n" + appText.TotalGuesses + maxGuesses);
+            Console.WriteLine(appText.GuessANumberBetween + minNumber + " - " + maxNumber);
+            return;
+        }
+        if ((difficulty == "easy") || (difficulty == "lett"))
+        {
+            CoreGame.EasyDifficulty(appText);
+        }
+        else if ((difficulty == "medium") || (difficulty == "medium"))
+        {
+            CoreGame.MediumDifficulty(appText);
+        }
+        else if ((difficulty == "hard") || (difficulty == "vanskelig"))
+        {
+            CoreGame.HardDifficulty(appText);
+        }
+        else if ((difficulty == "impossible") || (difficulty == "umulig"))
+        {
+            CoreGame.ImpossibleDifficulty(appText);
+        }
+        else
+        {
+            Console.Clear();
+            CoreGame.ChooseDifficulty(appText);
+        }
+        minNumber = 1;
+        Console.WriteLine("\n" + appText.TotalGuesses + maxGuesses);
+>>>>>>> Stashed changes
         Console.WriteLine(appText.GuessANumberBetween + minNumber + " - " + maxNumber);
     }
-    static void EasyDifficulty() //Call startext easy text here ------------------------------------------------------------------------------------------------------------------------------------------------------
+    static void EasyDifficulty(ApplicationStrings appText) 
     {
         CoreGame.maxGuesses = 25;
         CoreGame.maxNumber = 50;
+        CoreGame.changeColor(ConsoleColor.DarkGreen, appText.YouChose + difficulty + appText.ChosenDifficulty);
     }
-    static void MediumDifficulty()
+    static void MediumDifficulty(ApplicationStrings appText)
     {
         CoreGame.maxGuesses = 15;
         CoreGame.maxNumber = 75;
+        CoreGame.changeColor(ConsoleColor.Yellow, appText.YouChose + difficulty + appText.ChosenDifficulty);
     }
-    static void HardDifficulty()
+    static void HardDifficulty(ApplicationStrings appText)
     {
         CoreGame.maxGuesses = 10;
         CoreGame.maxNumber = 100;
+        CoreGame.changeColor(ConsoleColor.DarkRed, appText.YouChose + difficulty + appText.ChosenDifficulty);
     }
-    static void ImpossibleDifficulty()
+    static void ImpossibleDifficulty(ApplicationStrings appText)
     {
         CoreGame.maxGuesses = 3;
         CoreGame.maxNumber = 200;
+        CoreGame.changeColor(ConsoleColor.Cyan, appText.YouChose + difficulty + appText.ChosenDifficulty);
     }
-    static void FunDifficulty()
+    static void FunDifficulty(ApplicationStrings appText)
     {
         CoreGame.minNumber = new Random().Next(1, 100);
         CoreGame.maxNumber = new Random().Next(1, 100);
@@ -188,6 +214,7 @@ class CoreGame
         {
             CoreGame.maxGuesses = new Random().Next(1, CoreGame.minNumber);
         }
+        CoreGame.changeColor(ConsoleColor.Magenta, appText.YouChose + difficulty + appText.ChosenDifficulty);
     }
     static void ChooseDifficulty(ApplicationStrings appText)
     {
@@ -235,12 +262,9 @@ class CoreGame
     static void Round(ApplicationStrings appText)
     {
         CoreGame.randmomNumber = new Random().Next(minNumber, maxNumber);
-        CoreGame.wrongGuesses = 0;
         while (maxGuesses != wrongGuesses)
         {
-            Console.Write("Answer: " + randmomNumber + "\n");
             Console.WriteLine(appText.RoundNumber + currentRound + appText.EnterYourGuess);
-
             var input = Console.ReadLine();
             var test = int.TryParse(input, out var result);
             if (!test)
@@ -265,14 +289,12 @@ class CoreGame
             }
             else
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"" + appText.YouGuessedIt, CoreGame.currentRound);
+                CoreGame.changeColor(ConsoleColor.Green, appText.YouGuessedIt);
                 CoreGame.correctGuesses++;
                 CoreGame.currentRound++;
                 CoreGame.randmomNumber = new Random().Next(minNumber, maxNumber);
             }
             Console.ResetColor();
-
             int guessesLeft = maxGuesses - wrongGuesses;
             Console.ForegroundColor = ConsoleColor.Red;
             if (guessesLeft > maxGuesses / 2)
@@ -299,7 +321,6 @@ class CoreGame
     {
         float avgWrongGuessesPerRound = (float)CoreGame.wrongGuesses / (float)CoreGame.correctGuesses;
         Console.Clear();
-
         CoreGame.changeColor(ConsoleColor.Green, appText.StatsCorrectGuesses + CoreGame.correctGuesses);
         CoreGame.changeColor(ConsoleColor.Red, appText.StatsWrongGuesses + CoreGame.wrongGuesses);
         Console.WriteLine(appText.StatsPerRoundAverage + avgWrongGuessesPerRound);
